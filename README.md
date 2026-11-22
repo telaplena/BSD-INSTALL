@@ -71,7 +71,7 @@ Ao terminar, digite `exit` e escolha **Reboot** no menu do instalador (o script 
 Entre como root e rode:
 
 ```sh
-fetch https://raw.githubusercontent.com/SEU_USUARIO/SEU_REPO/main/pos-install.sh
+fetch https://raw.githubusercontent.com/telaplena/BSD-INSTALL/main/pos-install.sh
 sh pos-install.sh
 ```
 
