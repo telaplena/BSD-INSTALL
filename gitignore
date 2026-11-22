@@ -1,0 +1,21 @@
+# Logs gerados pelo script
+*.log
+pos-install.log
+
+# Arquivos temporários e de backup
+*.tmp
+*.bak
+*.orig
+*.rej
+*~
+.pos-install.rc
+
+# Arquivos de editores
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
