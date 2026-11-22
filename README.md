@@ -105,4 +105,4 @@ Sugestões e pull requests são bem-vindos! Ideias de melhoria:
 
 ## 📄 Licença
 
-Distribuído sob a licença **BSD 2-Clause** (ou escolha a de sua preferência).
+Distribuído sob a licença **BSD 2-Clause** 
