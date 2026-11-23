@@ -187,11 +187,29 @@ check_tools() {
     fi
 }
 
-net_ok() { ping -c1 -t4 1.1.1.1 >/dev/null 2>&1 || ping -c1 -t4 8.8.8.8 >/dev/null 2>&1; }
+# Testa a internet SEM depender so de ping (redes de VM, como o modo usuario do
+# QEMU, nao repassam ICMP): tenta ping, depois conexao TCP, depois HTTPS.
+net_ok() {
+    ping -c1 -t3 1.1.1.1 >/dev/null 2>&1 && return 0
+    if command -v nc >/dev/null 2>&1; then
+        nc -z -w 4 1.1.1.1 443 >/dev/null 2>&1 && return 0
+        nc -z -w 4 8.8.8.8 53 >/dev/null 2>&1 && return 0
+    fi
+    command -v fetch >/dev/null 2>&1 && \
+        fetch -q -T 6 -o /dev/null https://pkg.freebsd.org/ >/dev/null 2>&1 && return 0
+    return 1
+}
 dns_ok() { getent hosts pkg.freebsd.org >/dev/null 2>&1; }
 
+# Alguma interface (fora o loopback) ja tem endereco IPv4?
+has_ip() {
+    ifconfig -a 2>/dev/null | grep 'inet ' | grep -v '127\.0\.0\.1' | grep -q .
+}
+
 fix_network() {
-    if ! net_ok; then
+    # Nunca mexe numa rede que ja tem IP: rodar dhclient de novo pode DERRUBAR
+    # o endereco que o instalador configurou.
+    if ! net_ok && ! has_ip; then
         say "Sem rede: tentando DHCP automaticamente..."
         for _if in $(ifconfig -l); do
             case $_if in lo*|pflog*|pfsync*|enc*|bridge*|epair*|tap*|tun*|wlan*|gif*|stf*|ipfw*|vm-*) continue ;; esac
